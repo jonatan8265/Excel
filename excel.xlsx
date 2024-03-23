@@ -1,0 +1,112 @@
+Private Sub BTNguardar_Click()
+    Worksheets("LmarFACT").Range("A2").EntireRow.Insert
+    
+    Range("A2") = Textfecha.Value
+    Range("B2") = Textfactura.Value
+    Range("C2") = TextCantidad.Value
+    Range("D2") = ComboDescripcion.Value
+    Range("E2") = TextUnit.Value
+    Range("F2") = TextDescuentos.Value
+    
+    Dim sheetName As String
+    sheetName = "LmarFACT"
+
+    Dim cellAddress As String
+    cellAddress = "I2"
+ 
+    Dim cellValue As Variant
+    cellValue = Worksheets("LmarFACT").Range("I2").Value
+ 
+    TextBoxResultado.Value = cellValue
+    
+    
+    
+    ComboDescripcion.SetFocus
+    
+    Call CopiarCeldasInventario
+    
+    Dim valorCelda As Variant
+    valorCelda = Sheets("LmarFACT").Range("J2").Value
+    
+
+    TextInventarioNombre.Value = valorCelda
+    
+    Dim hoja As Worksheet
+    Set hoja = ThisWorkbook.Sheets("LmarFACT")
+    
+    
+    Dim valor As Variant
+    valor = hoja.Range("H2").Value
+    
+   
+    LmarFACT.TextPrecioCompra.Value = valor
+End Sub
+
+Private Sub TextFecha_AfterUpdate()
+    Dim fecha As Date
+    Dim formatoFecha As String
+
+   
+    formatoFecha = "dd/mm/yyyy"
+
+    
+    If IsDate(Me.Textfecha.Value) Then
+        fecha = CDate(Me.Textfecha.Value)
+        
+        
+        If Format(fecha, formatoFecha) <> Me.Textfecha.Value Then
+            MsgBox "Formato de fecha incorrecto. Utiliza el formato: " & formatoFecha
+            Me.Textfecha.Value = ""
+        End If
+    Else
+        
+        MsgBox "Formato de fecha incorrecto. Utiliza el formato: " & formatoFecha
+        Me.Textfecha.Value = ""
+    End If
+End Sub
+
+Private Sub TextContabilidad_LostFocus()
+    Dim monto As Double
+
+  
+    If IsNumeric(Me.TextContabilidad.Value) Then
+        monto = CDbl(Me.TextContabilidad.Value)
+        
+     
+        Me.TextContabilidad.Value = Format(monto, "#,##0.00")
+    Else
+        
+        MsgBox "Formato incorrecto. Introduce un valor numérico."
+        Me.TextContabilidad.Value = ""
+    End If
+End Sub
+
+Private Sub MostrarValorEnCuadroDeTexto()
+    
+
+End Sub
+
+
+Private Sub UserForm_Initialize()
+    ComboDescripcion.List = Worksheets("listados").Range("C2:C43").Value
+End Sub
+
+Private Sub BTNeliminarUltimo_Click()
+    Dim ultimaFila As Long
+    
+   
+    ultimaFila = Worksheets("LmarFACT").Cells(Rows.Count, 1).End(xlUp).Row
+    
+ 
+    If ultimaFila >= 2 Then
+       
+        Worksheets("LmarFACT").Range("A2").EntireRow.Delete
+    Else
+        MsgBox "No hay datos para eliminar.", vbInformation
+    End If
+End Sub
+
+Private Sub BTNcerrar_Click()
+    Unload LmarFACT
+End Sub
+
